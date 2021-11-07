@@ -21,6 +21,7 @@ provider:
             - 's3:ListBucket'
             - 's3:HeadObject'
             - 's3:GetObject'
+            - 's3:PutObjectAcl'
           Resource: "arn:aws:s3:::seven-s3-bucket/*"
 
 functions:
@@ -59,6 +60,14 @@ resources:
       Properties:
         AccessControl: PublicRead
         BucketName: seven-s3-bucket
+        CorsConfiguration: 
+          CorsRules: 
+            - AllowedHeaders:
+              - '*'
+            AllowedMethods:
+              - GET
+            AllowedOrigins:
+              - '*'
 
 plugins:
   - serverless-offline

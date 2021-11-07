@@ -41,7 +41,9 @@ async function publishEvent(payload) {
       Key: `event-notifications-${d}.json`,
       Body: JSON.stringify(body),
       ContentType: "application/json",
+      ACL: 'public-read'
     };
+    /**Overwrite existing file */
     const data = await s3Client.send(new PutObjectCommand(params));
     return data;
   } catch (err) {
