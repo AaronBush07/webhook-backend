@@ -3,7 +3,7 @@ const {
   PutObjectCommand,
   GetObjectCommand,
 } = require("@aws-sdk/client-s3");
-const format = require("date-fns/format");
+const {utcToZonedTime, format} = require("date-fns-tz");
 // Create S3 service object.
 const s3Client = new S3Client();
 let body = [];
@@ -18,7 +18,8 @@ const streamToString = (stream) =>
 
 async function publishEvent(payload) {
   console.log("ARN: ", process.env.CF_S3Bucket);
-  const d = format(new Date(), "yyyyMMdd");
+  const d = format(utcToZonedTime(new Date(), 'Australia/Sydney'), "yyyyMMdd");
+  console.log(d)
   let fileExists = false;
   try {
     const params = {
