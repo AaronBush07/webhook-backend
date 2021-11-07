@@ -33,7 +33,7 @@ functions:
       - http:
          path: token
          method: get
-  seven:
+  sevenevent:
     handler: lambdas/event.handler
     custom: 
       env-resources: 
@@ -41,7 +41,7 @@ functions:
         - S3Bucket
     events:
       - http:
-         path: seven
+         path: sevenevent
          method: post
          authorizer: 
            name: auth
