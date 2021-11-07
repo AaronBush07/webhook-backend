@@ -63,11 +63,11 @@ resources:
         CorsConfiguration: 
           CorsRules: 
             - AllowedHeaders:
-              - '*'
-            AllowedMethods:
-              - GET
-            AllowedOrigins:
-              - '*'
+                - '*'
+              AllowedMethods:
+                - GET
+              AllowedOrigins:
+                - '*'
 
 plugins:
   - serverless-offline
