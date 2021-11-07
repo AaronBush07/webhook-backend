@@ -1,60 +1,31 @@
-const token = require("../lambdas/token");
-const authorizer = require("../lambdas/authorizer");
+const sevenEvent = require("../lambdas/event");
+jest.mock("../utils/snsClient");
+jest.mock("../utils/s3Client");
+const s3Client = require("../utils/s3Client");
+const snsClient = require("../utils/snsClient");
 
-describe("Basic test", () => {
-  test("Jest", () => {
-    expect(1).toBe(1);
-  });
-});
-
-describe("Test authentication", () => {
-  test("Should return a token", () => {
+describe("Test Event", () => {
+  test("Event should return 200 response if provided with payload", async () => {
     const event = {
-      body: "grant_type=client_credentials&client_id=external&client_secret=abc123",
+      body: '{\n\n  "eventType": "ContentUpdate",\n\n  "message": {\n\n    "contentId": "NEWS21-001",\n    "extradata": "NEWS 24",\n    "moredata": "NEWS 111"\n\n  }\n\n}',
     };
+    s3Client.mockImplementation(() => Promise.resolve("ok"));
+    snsClient.mockImplementation(() => Promise.resolve("ok"));
     let result;
-    token.handler(event, null, (n, response) => {
+    await sevenEvent.handler(event, null, (n, response) => {
       result = response;
     });
-    expect(result.body).toBe("MTQ0XjJkZmQ5OTM5NDE5ZTZzNGZmZjI3");
+    expect(result.statusCode).toBe(200);
   });
 
-  test("Should return no token", () => {
-    const event = {
-      body: "grant_type=client_credentials&client_id=random&client_secret=abc123",
-    };
+  test("Event should return 400 response if provided with no payload", async () => {
+    const event = {};
+    s3Client.mockImplementation(() => Promise.resolve("ok"));
+    snsClient.mockImplementation(() => Promise.resolve("ok"));
     let result;
-    token.handler(event, null, (n, response) => {
+    await sevenEvent.handler(event, null, (n, response) => {
       result = response;
     });
-    expect(result.body).toBeFalsy();
-  });
-
-  test("Should authenticate when given the correct token", () => {
-    const event = {
-      authorizationToken: "Bearer MTQ0XjJkZmQ5OTM5NDE5ZTZzNGZmZjI3",
-    };
-    const context = {
-      awsRequestId: 1,
-    };
-    let result;
-    authorizer.handler(event, context, (n, response) => {
-      result = response;
-    });
-    expect(result.policyDocument.Statement[0].Effect).toBe("Allow");
-  });
-
-  test("Should not authenticate when given the incorrect token", () => {
-    const event = {
-      authorizationToken: "Bearer abc123",
-    };
-    const context = {
-      awsRequestId: 1,
-    };
-    let result;
-    authorizer.handler(event, context, (n, response) => {
-      result = response;
-    });
-    expect(result.policyDocument.Statement[0].Effect).toBe("Deny");
+    expect(result.statusCode).toBe(400);
   });
 });

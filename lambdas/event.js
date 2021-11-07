@@ -8,8 +8,15 @@ module.exports.handler = async (event, context, callback) => {
             message: 'Event Submitted'
         }),
     };
-    console.log(event)
-    const payload = JSON.parse(event.body)
+    let payload; 
+    if (event?.body) {
+        try{
+            payload = JSON.parse(event.body)
+        } catch (err) {
+            console.log(err);
+            response.statusCode = 400;
+        }
+    }
     if (payload) {
         console.log('Adding to s3');
         await s3Client(payload);
