@@ -17,9 +17,8 @@ const streamToString = (stream) =>
   });
 
 async function publishEvent(payload) {
-  console.log("ARN: ", process.env.CF_S3Bucket);
+  /**Fix to inconsistent dates */
   const d = format(utcToZonedTime(new Date(), 'Australia/Sydney'), "yyyyMMdd");
-  console.log(d)
   let fileExists = false;
   try {
     const params = {

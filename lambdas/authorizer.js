@@ -1,12 +1,10 @@
 module.exports.handler = (event, context, callback) => {
   let auth = "Deny";
   let resource = process.env.IS_OFFLINE
-    ? "http://localhost:3000/dev/seven"
+    ? "http://localhost:3000/dev/sevenevent"
     : event.methodArn;
-  console.log("AUTHORIZATION", event);
   const { authorizationToken } = event;
   let token = authorizationToken.replace(/^Bearer\s+/, "");
-  console.log(token);
   if (token === "MTQ0XjJkZmQ5OTM5NDE5ZTZzNGZmZjI3") {
     auth = "Allow";
   }
@@ -23,6 +21,5 @@ module.exports.handler = (event, context, callback) => {
       ],
     },
   };
-  console.log(policy.policyDocument.Statement);
   callback(null, policy);
 };

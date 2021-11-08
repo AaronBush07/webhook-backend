@@ -9,6 +9,7 @@ module.exports.handler = async (event, context, callback) => {
         }),
     };
     let payload; 
+    
     if (event?.body) {
         try{
             payload = JSON.parse(event.body)

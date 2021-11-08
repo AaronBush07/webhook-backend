@@ -5,8 +5,6 @@ const REGION = "ap-southeast-2"; //e.g. "us-east-1"
 const snsClient = new SNSClient({ region: REGION });
 
 async function publishSNS(payload) {
-  console.log("ARN: ", process.env.CF_SNSTopic);
-
   try {
     const params = {
       Message: JSON.stringify(payload),
